@@ -1,0 +1,475 @@
+{
+  "project": "Christmas Light Takedown Optimizer",
+  "branchName": "ralph/takedown-optimizer",
+  "description": "A mobile-first web app for professional Christmas light companies to optimize takedown operations with Jobber integration",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Database schema for users and companies",
+      "description": "As a developer, I need database tables to store user accounts and company profiles.",
+      "acceptanceCriteria": [
+        "Create Supabase migration for 'companies' table with: id, name, phone, email, service_regions, storage_addresses, created_at",
+        "Create 'users' table with: id, company_id, email, name, role (owner/dispatcher/crew), created_at",
+        "Create 'jobber_connections' table with: id, company_id, access_token, refresh_token, expires_at, created_at",
+        "Set up foreign key relationships",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Database schema for jobs and inventory",
+      "description": "As a developer, I need tables to store takedown jobs and inventory data.",
+      "acceptanceCriteria": [
+        "Create 'jobs' table with: id, company_id, jobber_id, customer_name, address, phone, status, scheduled_date, crew_id, notes, created_at",
+        "Create 'job_inventory' table with: id, job_id, item_type, quantity, condition, storage_location, qr_code",
+        "Create 'job_photos' table with: id, job_id, photo_url, photo_type (before/after/damage), created_at",
+        "Create 'status_updates' table with: id, job_id, status, timestamp, updated_by",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Database schema for crews and routes",
+      "description": "As a developer, I need tables to manage crews and daily routes.",
+      "acceptanceCriteria": [
+        "Create 'crews' table with: id, company_id, name, member_names (json array), created_at",
+        "Create 'routes' table with: id, company_id, crew_id, date, job_ids (json array), optimized_order, status",
+        "Create indexes for common queries (company_id, date, status)",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Supabase client and types setup",
+      "description": "As a developer, I need proper Supabase client configuration with TypeScript types.",
+      "acceptanceCriteria": [
+        "Generate TypeScript types from Supabase schema",
+        "Create typed Supabase client in src/lib/supabase.ts",
+        "Create server-side Supabase client for API routes",
+        "Export database types for use across app",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Jobber OAuth API route - Authorization",
+      "description": "As a user, I want to initiate Jobber OAuth flow to connect my account.",
+      "acceptanceCriteria": [
+        "Create /api/auth/jobber/route.ts that redirects to Jobber authorization URL",
+        "Include client_id, redirect_uri, response_type=code, state parameter",
+        "Callback URL: https://christmas-light-takedown-optimizer.vercel.app/api/auth/jobber/callback",
+        "State stored in cookie for verification",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Jobber OAuth API route - Callback",
+      "description": "As a user, I want the callback to exchange code for tokens.",
+      "acceptanceCriteria": [
+        "Create /api/auth/jobber/callback/route.ts",
+        "Verify state parameter matches cookie",
+        "Exchange authorization code for access_token and refresh_token",
+        "Store tokens in jobber_connections table",
+        "Redirect to /dashboard on success",
+        "Show error page on failure",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Jobber GraphQL client setup",
+      "description": "As a developer, I need a GraphQL client to query Jobber API.",
+      "acceptanceCriteria": [
+        "Create src/lib/jobber.ts with GraphQL client",
+        "Include token refresh logic when access_token expires",
+        "Create helper functions: getClients(), getJobs(), updateJobStatus()",
+        "Handle rate limiting with exponential backoff",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Landing page hero section with video",
+      "description": "As a visitor, I want to see an engaging hero section with video.",
+      "acceptanceCriteria": [
+        "Create src/app/page.tsx as landing page",
+        "Hero section with headline: 'Optimize Your Christmas Light Takedown Season'",
+        "Subheadline explaining value proposition",
+        "Placeholder for HeyGen video (to be generated)",
+        "Placeholder for Gemini background video",
+        "'Connect with Jobber' CTA button linking to /api/auth/jobber",
+        "Mobile-responsive design",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Landing page features section",
+      "description": "As a visitor, I want to see key features of the tool.",
+      "acceptanceCriteria": [
+        "Features grid with icons: Route Optimization, Inventory Tracking, Crew Management, Photo Documentation, Jobber Sync, Customer Reports",
+        "Each feature has title, description, and icon",
+        "Responsive: 3 columns on desktop, 2 on tablet, 1 on mobile",
+        "Smooth scroll animations on reveal",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Landing page pricing and CTA section",
+      "description": "As a visitor, I want to see pricing and final call-to-action.",
+      "acceptanceCriteria": [
+        "Pricing section with plan options",
+        "FAQ accordion component",
+        "Final CTA section with 'Get Started' button",
+        "Footer with links and copyright",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "Dashboard layout and navigation",
+      "description": "As a logged-in user, I want a dashboard with navigation.",
+      "acceptanceCriteria": [
+        "Create src/app/dashboard/layout.tsx",
+        "Bottom navigation bar for mobile (Dashboard, Jobs, Routes, Crews, Settings)",
+        "Sidebar navigation for desktop",
+        "Active state indicator on current page",
+        "Company name in header",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Dashboard overview page",
+      "description": "As a dispatcher, I want to see takedown progress at a glance.",
+      "acceptanceCriteria": [
+        "Create src/app/dashboard/page.tsx",
+        "Stats cards: Total Jobs, Completed, In Progress, Remaining",
+        "Progress bar visualization",
+        "Today's scheduled jobs list with status badges",
+        "Quick action buttons: Add Route, View All Jobs",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Jobs list page with filters",
+      "description": "As a dispatcher, I want to view and filter all takedown jobs.",
+      "acceptanceCriteria": [
+        "Create src/app/dashboard/jobs/page.tsx",
+        "List of jobs with: customer name, address, status, scheduled date, crew",
+        "Filter chips: All, Scheduled, In Progress, Completed",
+        "Search input for customer name or address",
+        "Sort dropdown: Date, Status, Address",
+        "Pull to refresh on mobile",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-014",
+      "title": "Job detail page",
+      "description": "As a crew member, I want to see full job details.",
+      "acceptanceCriteria": [
+        "Create src/app/dashboard/jobs/[id]/page.tsx",
+        "Customer info card: name, address (tappable for maps), phone (tappable to call)",
+        "Status buttons: En Route, On Site, In Progress, Completed",
+        "Notes/instructions section",
+        "Installation photos gallery",
+        "Inventory checklist",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "Job status update functionality",
+      "description": "As a crew lead, I want to update job status from my phone.",
+      "acceptanceCriteria": [
+        "Status buttons trigger API call to update status",
+        "Create /api/jobs/[id]/status/route.ts",
+        "Status change recorded with timestamp in status_updates table",
+        "Optimistic UI update with rollback on error",
+        "Toast notification on success/error",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 15,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "Photo capture and upload",
+      "description": "As a crew member, I want to capture before/after photos.",
+      "acceptanceCriteria": [
+        "Camera button on job detail page",
+        "Native camera access via input type=file with capture",
+        "Photo type selector: Before, After, Damage",
+        "Upload to Supabase Storage",
+        "Save photo URL to job_photos table",
+        "Photo thumbnail appears in gallery after upload",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "Inventory checklist component",
+      "description": "As a crew member, I want to check off items as I remove them.",
+      "acceptanceCriteria": [
+        "Checklist component showing items from job_inventory",
+        "Checkbox for each item",
+        "Swipe action to mark as damaged/missing",
+        "Save checklist state to database",
+        "Visual indicator for incomplete vs complete checklist",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "QR code label generator",
+      "description": "As a crew member, I want to generate storage labels.",
+      "acceptanceCriteria": [
+        "QR code generation using qrcode library",
+        "Label displays: customer name, address, bin number, QR code",
+        "QR code encodes job ID for scanning",
+        "Print button opens system print dialog",
+        "Save as image button",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 18,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-019",
+      "title": "Routes page with daily view",
+      "description": "As a dispatcher, I want to view and manage daily routes.",
+      "acceptanceCriteria": [
+        "Create src/app/dashboard/routes/page.tsx",
+        "Date picker to select day",
+        "List of crews with assigned job count",
+        "Expand crew to see route in order",
+        "Add route button",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 19,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-020",
+      "title": "Route builder drag-and-drop",
+      "description": "As a dispatcher, I want to build routes by assigning jobs.",
+      "acceptanceCriteria": [
+        "Create src/app/dashboard/routes/new/page.tsx",
+        "Two columns: Unassigned Jobs, Route",
+        "Drag job from unassigned to route",
+        "Reorder jobs within route by dragging",
+        "Crew selector dropdown",
+        "Save route button",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 20,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-021",
+      "title": "Crew route view for field use",
+      "description": "As a crew member, I want to see my daily route.",
+      "acceptanceCriteria": [
+        "Create src/app/dashboard/my-route/page.tsx",
+        "Show jobs assigned to current user's crew for today",
+        "Jobs in optimized order",
+        "Next job card prominently displayed",
+        "Navigate button opens maps app with address",
+        "Swipe to view next/previous job",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 21,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-022",
+      "title": "Crews management page",
+      "description": "As a dispatcher, I want to manage crews.",
+      "acceptanceCriteria": [
+        "Create src/app/dashboard/crews/page.tsx",
+        "List of crews with member names",
+        "Add crew button",
+        "Edit crew modal: name, add/remove members",
+        "Delete crew with confirmation",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 22,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-023",
+      "title": "Settings page with company profile",
+      "description": "As a business owner, I want to manage settings.",
+      "acceptanceCriteria": [
+        "Create src/app/dashboard/settings/page.tsx",
+        "Company profile form: name, phone, email",
+        "Service regions multi-select",
+        "Storage facility addresses",
+        "Jobber connection status with disconnect option",
+        "Save settings to database",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 23,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-024",
+      "title": "HeyGen video generation",
+      "description": "As a system, I need to generate Brandon Calloway avatar video.",
+      "acceptanceCriteria": [
+        "Create /api/heygen/generate/route.ts",
+        "Use HeyGen API to create avatar video",
+        "Script: Introduction to takedown optimizer, key benefits, CTA to sign up",
+        "Video stored and URL saved for landing page",
+        "Fallback handling if generation fails",
+        "Typecheck passes"
+      ],
+      "priority": 24,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-025",
+      "title": "Gemini video generation",
+      "description": "As a system, I need to generate 10-second background video.",
+      "acceptanceCriteria": [
+        "Create /api/gemini/generate-video/route.ts",
+        "Use Gemini Veo API to create 10-second clip",
+        "Prompt: Professional crew taking down Christmas lights from house, winter setting, satisfying timelapse feel",
+        "Video stored and URL saved for landing page",
+        "Fallback gradient background if generation fails",
+        "Typecheck passes"
+      ],
+      "priority": 25,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-026",
+      "title": "Integrate videos into landing page",
+      "description": "As a visitor, I want to see generated videos on landing page.",
+      "acceptanceCriteria": [
+        "HeyGen video displayed in hero section",
+        "Gemini video as background with overlay",
+        "Video player controls for HeyGen video",
+        "Autoplay muted for background video",
+        "Mobile-optimized video loading",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 26,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-027",
+      "title": "PWA manifest and service worker",
+      "description": "As a crew member, I want to install the app on my phone.",
+      "acceptanceCriteria": [
+        "Create public/manifest.json with app name, icons, theme color",
+        "Configure next-pwa for service worker generation",
+        "App icons in multiple sizes",
+        "Splash screen configuration",
+        "Install prompt appears on mobile browsers",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 27,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-028",
+      "title": "Final polish and responsive testing",
+      "description": "As a user, I want a polished mobile experience.",
+      "acceptanceCriteria": [
+        "Test all pages on mobile viewport (375px)",
+        "Test all pages on tablet viewport (768px)",
+        "Test all pages on desktop viewport (1280px)",
+        "Fix any overflow or layout issues",
+        "Ensure touch targets are at least 44px",
+        "Test pull-to-refresh functionality",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 28,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
